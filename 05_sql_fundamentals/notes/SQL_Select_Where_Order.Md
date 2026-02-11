@@ -2,6 +2,10 @@
 
 --
 
+## SEMANA 3 DIA 2
+
+--
+
 ## Select
 
 - Seleciona o que eu irei ver de uma tabela
