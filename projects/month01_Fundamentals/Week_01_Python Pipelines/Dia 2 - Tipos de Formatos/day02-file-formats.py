@@ -6,18 +6,18 @@ path_file_csv = r"C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/pr
 path_file_json = r"C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month01_Fundamentals/Data/Raw/sales.json"
 path_file_parquet = r"C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month01_Fundamentals/Data/Raw/sales.parquet"
 
-#==FUNÇÕES DE LEITURA==#
-def read_csv_file(path: str):
-    return pd.read_csv(path)
+#==FUNÇÕES DE LEITURA CSV==#
+def read_csv_file(path__file_csv: str):
+    return pd.read_csv(path_file_csv)
 
-#==FUNÇÕES DE TRANSFORMAÇÃO==#
+#==FUNÇÕES DE TRANSFORMAÇÃO PARA JSON E PARQUET==#
 def transform_json(df: pd.DataFrame, path: str):
     df.to_json(path, orient="records", lines=True)
 
 def transform_parquet(df: pd.DataFrame, path: str):
     df.to_parquet(path, index=False)
 
-#########
+#==FUNÇÕES DE LEITURA JSON E PARQUET==#
 def read_json_file(path: str):
     return pd.read_json(path, lines=True)
 
@@ -52,34 +52,24 @@ def explore_data(df: pd.DataFrame):
 def main():
 
     print("\nReading CSV...")
-    df = read_csv_file(path_file_csv)
+    df_csv = read_csv_file(path_file_csv)
 
-    print("\nSaving JSON...")
-    transform_json(df, path_file_json)
+    print("\nTransforming JSON...")
+    transform_json(df_csv, path_file_csv)
 
-    print("\nSaving Parquet...")
-    transform_parquet(df, path_file_parquet)
-
-    print("\nReading JSON...")
+    print("nReading JSON...")
     df_json = read_json_file(path_file_json)
 
-    print("\nReading Parquet...")
+    print("\nTransforming Parquet...")
+    transform_parquet(df_csv, path_file_parquet)
+
+    print("Reading Parquet...")
     df_parquet = read_parquet_file(path_file_parquet)
 
-    print("\nShape do CSV:")
-    print(df.shape)
-
-    print("\nShape do JSON:")
-    print(df_json.shape)
-
-    print("\nShape do Parquet")
-    print(df_parquet.shape)
-
-
-    print("\nExplorando dados...")
-    explore_data(df)
-
     print("\nFiles generated successfully.")
+
+    print("E")
+    explore_data(df_csv)
 
 #==EXECUÇÃO==#
 if __name__ == "__main__":

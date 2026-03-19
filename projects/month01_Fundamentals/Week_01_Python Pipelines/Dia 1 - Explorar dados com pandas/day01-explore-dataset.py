@@ -1,71 +1,89 @@
-#==BLIBIOTECAS==#
+#==BIBLIOTECAS==#
 import pandas as pd
+from pathlib import Path
 
-path_file = r"C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month01_Fundamentals/Data/Raw/sales.csv"
 
-#verificando o caminho
-print(path_file)
+#==CONFIGURAÇÃO DO CAMINHO==#
+path_file = Path("C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month01_Fundamentals/Data/Raw/sales.csv")
 
-#==FUNÇÃO PARA RETORNAR O CAMINHO EM CSV==#
-def load_sales_dataset(path_file: str):
+# Verificando o caminho
+print(f"Caminho do arquivo: {path_file}")
+
+
+#==LOAD: FUNÇÃO PARA CARREGAR O CSV==#
+def load_data(path_file: Path) -> pd.DataFrame:
+    if not path_file.exists():
+        raise FileNotFoundError(f"Arquivo não encontrado: {path_file}")
     df = pd.read_csv(path_file)
-    return df   
+    print(f"Arquivo carregado com sucesso! ({df.shape[0]} linhas x {df.shape[1]} colunas)")
+    return df
 
-#==FUNÇÃO PARA EXPLORAR OS DADOS==#
-def explore_data(df: pd.DataFrame):
-    print("\nPrimeiras Linhas")
+
+#==EXPLORE: FUNÇÃO PARA EXPLORAR OS DADOS==#
+def explore_data(df: pd.DataFrame) -> None:
+    print("\n--- Primeiras Linhas ---")
     print(df.head())
 
-    print("\nUltimas Linhas")
+    print("\n--- Últimas Linhas ---")
     print(df.tail())
 
-    print("\nColunas")
-    print(df.columns)
+    print("\n--- Colunas ---")
+    print(df.columns.tolist())
 
-    print("\nInformações do DF")
+    print("\n--- Informações do DataFrame ---")
     df.info()
 
-    print("\nValores Nuloes")
+    print("\n--- Valores Nulos ---")
     print(df.isnull().sum())
 
-    print("\nEstrtura do DF (linhas X colunas)")
+    print("\n--- Estrutura do DataFrame (linhas x colunas) ---")
     print(df.shape)
 
-    print("\nEstatisticas Basicas")
+    print("\n--- Estatísticas Básicas ---")
     print(df.describe())
 
-df = load_sales_dataset(path_file)
-explore_data(df)
+
+#==TRANSFORM: FUNÇÃO COM AS ANÁLISES==#
+def transform(df: pd.DataFrame) -> dict:
+
+    # Top 10 produtos por receita total
+    top_dez_produtos = (
+        df.groupby('product_name')['total_price']
+        .sum()
+        .sort_values(ascending=False)
+        .head(10)
+    )
+    print("\n--- Top 10 Produtos por Receita ---")
+    print(top_dez_produtos)
+
+    # Vendas totais por categoria
+    vendas_por_categoria = (
+        df.groupby('product_category')['total_price']
+        .sum()
+        .sort_values(ascending=False)
+    )
+    print("\n--- Vendas Agrupadas por Categoria ---")
+    print(vendas_por_categoria)
+
+    # Número de pedidos por cidade/região
+    print("\n--- Cidades únicas ---")
+    print(df['city'].unique())
+
+    pedidos_por_regiao = (
+        df.groupby('city')['sale_id']
+        .count()
+        .sort_values(ascending=False)
+        .rename('total_pedidos')
+    )
+    print("\n--- Total de Pedidos por Região ---")
+    print(pedidos_por_regiao)
 
 
-#==TOP 10 produtos==#
-top_dez_vendas = (
-    df.groupby('sale_id')['total_price']
-    .sum()
-    .sort_values(ascending=False)
-    .head(10)
-)
-print("\nTop 10 Vendas")
-print(top_dez_vendas)
+#==PIPELINE PRINCIPAL==#
+if __name__ == "__main__":
 
-#==VENDAS TOTAL POR CATEGORIA==#
-vendas_por_categoria = (
-    df.groupby('product_category')['total_price']
-    .sum()
-    .sort_values(ascending = False)
-    .head(10)
-)
-print("\nVendas Agrupadas por categoria")
-print(vendas_por_categoria)
+    # 1. Extract
+    df = load_data(path_file)
 
-#==QUANTOS PEDIDOS FORAM REALIZADOS POR REGIÃO==#
-print(df['city'].unique())
-print(df['city'].value_counts())
-
-pedidos_por_regiao = (
-    df.groupby('city')['quantity']
-    .sum()
-    .sort_values()
-)
-print("\nTotal de pedidos por Região")
-print(pedidos_por_regiao)
+    # 2. Exploração
+    explore_data(df)
