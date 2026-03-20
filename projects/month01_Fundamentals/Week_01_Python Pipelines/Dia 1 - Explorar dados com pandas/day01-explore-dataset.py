@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 #==CONFIGURAÇÃO DO CAMINHO==#
-path_file = Path("C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month01_Fundamentals/Data/Raw/sales.csv")
+path_file = Path("C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month01_Fundamentals/Data/Raw/sal    es.csv")
 
 # Verificando o caminho
 print(f"Caminho do arquivo: {path_file}")
