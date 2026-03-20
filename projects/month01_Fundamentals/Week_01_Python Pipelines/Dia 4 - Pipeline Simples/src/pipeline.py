@@ -1,4 +1,5 @@
 #==BLIBIOTECAS E FUNÇÕES==#
+#funções
 from extractor import extract
 from transformer import (
     transform_normalize_columns,
@@ -6,10 +7,11 @@ from transformer import (
     transform_select_columns,
 )
 from loader import load
-
+#blibiotecas
+from pathlib import Path
 
 #==FUNÇÕES==#
-def run_pipeline(input_path: str, region: str, output_path: str):
+def run_pipeline(input_path: str, column: str, value: str, output_path: str):
     """Orquestra o pipeline: extract → transform → load."""
 
     print("=" * 40)
@@ -18,7 +20,7 @@ def run_pipeline(input_path: str, region: str, output_path: str):
     df = extract(input_path)
 
     df = transform_normalize_columns(df)
-    df = transform_filtred_by_column_value(df, region)
+    df = transform_filtred_by_column_value(df, column, value)
     df = transform_select_columns(df, columns=[
         "order_id", "order_date", "region",
         "category", "sales", "profit"
