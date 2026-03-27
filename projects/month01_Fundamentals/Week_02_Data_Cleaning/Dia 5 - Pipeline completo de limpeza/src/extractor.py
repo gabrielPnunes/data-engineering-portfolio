@@ -1,16 +1,17 @@
-#==BLIBIOTECAS==#
+#==BIBLIOTECAS==#
 import os
-import pandas as pd
 import json
+import pandas as pd
+from pathlib import Path
 
 
-#==FUNÕES PARA EXTRAIR DADOS==#
-def extract(filepath: str) -> pd.DataFrame:
+#==FUNÇÕES PARA EXTRAIR DADOS==#
+def extract(filepath: str | Path) -> pd.DataFrame:
 
-    extensions = os.path.splitext(filepath)[-1].lstrip(".").lower()
+    filepath = Path(filepath)
+    extension = filepath.suffix.lstrip(".").lower()
 
-    #função especifica para abrir varios tipos de json
-    def read_json():                                       
+    def read_json():
         with open(filepath, "r", encoding="utf-8") as f:
             conteudo = f.read().strip()
 
@@ -28,18 +29,18 @@ def extract(filepath: str) -> pd.DataFrame:
                 if isinstance(valor, list):
                     return pd.DataFrame(valor)
             return pd.DataFrame([dados])
-        
+
     readers = {
         "csv":     lambda: pd.read_csv(filepath, encoding="latin-1"),
-        "json":    read_json(),
+        "json":    read_json, 
         "parquet": lambda: pd.read_parquet(filepath),
         "xlsx":    lambda: pd.read_excel(filepath),
         "xls":     lambda: pd.read_excel(filepath),
     }
 
-    if extensions not in readers:
-        raise ValueError(f"[extract] Formato não suportado: '.{extensions}'")
-    
-    df = readers[extensions]()
+    if extension not in readers:
+        raise ValueError(f"[extract] Formato não suportado: '.{extension}'")
+
+    df = readers[extension]() 
     print(f"[extract] {len(df)} linhas extraídas de '{filepath}'")
     return df

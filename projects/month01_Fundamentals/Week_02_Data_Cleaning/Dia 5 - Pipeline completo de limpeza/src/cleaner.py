@@ -1,9 +1,9 @@
-#==BLIBIOTECAS==#
+#==BIBLIOTECAS==#
 import re
 import pandas as pd
 
 
-#==FUNÇÃO PARA NORMZALIÇÃO DO NOME DAS COLUNAS==#
+#==FUNÇÃO PARA NORMALIZAÇÃO DO NOME DAS COLUNAS==#
 def standardize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     df.columns = (
         df.columns
@@ -16,7 +16,7 @@ def standardize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-#==TRATAMENTO DE VALORES NULOS POR COMPLETO, DROP, E SUBSTITUIÇÃO POR VALOR OU MEDIANA==#
+#==TRATAMENTO DE VALORES NULOS==#
 def drop_null_rows(df: pd.DataFrame, columns: list) -> pd.DataFrame:
     before = len(df)
     df = df.dropna(subset=columns)
@@ -39,11 +39,12 @@ def fill_nulls_with_median(df: pd.DataFrame, column: str) -> pd.DataFrame:
     return df
 
 
-#==PADRONIZAÇÃO DAS STRINGS DE UMA COLUNA==#
+#==PADRONIZAÇÃO DE STRINGS==#
 def standardize_string_columns(df: pd.DataFrame, columns: list) -> pd.DataFrame:
     for col in columns:
-        df[col] = df[col].astype(str).str.strip().str.title()
-        print(f"[clean] '{col}' → Title Case")
+        if col in df.columns:
+            df[col] = df[col].astype(str).str.strip().str.lower()
+            print(f"[clean] '{col}' → lower case")
     return df
 
 
@@ -53,7 +54,7 @@ def standardize_remove_special_chars(df: pd.DataFrame, column: str) -> pd.DataFr
     return df
 
 
-#==NORMALIZAÇÃO DAS DATAS==#
+#==NORMALIZAÇÃO DE DATAS==#
 def standardize_date_column(df: pd.DataFrame, column: str, format: str = "%Y-%m-%d") -> pd.DataFrame:
     df[column] = pd.to_datetime(df[column], infer_datetime_format=True)
     df[column] = df[column].dt.strftime(format)
@@ -61,15 +62,16 @@ def standardize_date_column(df: pd.DataFrame, column: str, format: str = "%Y-%m-
     return df
 
 
-#==TRANSFORMA AS COLUNAS PARA O TIPO FLOAT==#   
+#==NORMALIZAÇÃO NUMÉRICA==#
 def standardize_numeric_columns(df: pd.DataFrame, columns: list) -> pd.DataFrame:
     for col in columns:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
-        print(f"[clean] '{col}' → float")
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+            print(f"[clean] '{col}' → float")
     return df
 
 
-#==REMOVE VALORES EM OUTLIERS, CONSIDERANDO 1,5 EM CADA EXTREMO==#
+#==REMOÇÃO DE OUTLIERS (IQR)==#
 def remove_outliers_iqr(df: pd.DataFrame, column: str) -> pd.DataFrame:
     q1 = df[column].quantile(0.25)
     q3 = df[column].quantile(0.75)
@@ -83,17 +85,28 @@ def remove_outliers_iqr(df: pd.DataFrame, column: str) -> pd.DataFrame:
 
 
 #==PIPELINE DE LIMPEZA COMPLETO==#
-def clean(df: pd.DataFrame) -> pd.DataFrame:
+def clean(df: pd.DataFrame, config: dict) -> pd.DataFrame:
     print("=" * 40)
     print("[clean] Iniciando limpeza...")
 
+    # Colunas vindas do config
+    critical_columns = config.get("critical_columns", [])
+    string_columns   = config.get("string_columns",   [])
+    numeric_columns  = config.get("numeric_columns",  [])
+    outlier_columns  = config.get("outlier_columns",  [])
+    date_column      = config.get("date_column",      None)
+
     df = standardize_column_names(df)
-    df = drop_null_rows(df, columns=["sales", "order_id"])
-    df = fill_nulls_with_value(df, column="postal_code", value="N/A")
-    df = standardize_string_columns(df, columns=["category", "region", "segment"])
-    df = standardize_date_column(df, column="order_date")
-    df = standardize_numeric_columns(df, columns=["sales", "profit", "discount"])
-    df = remove_outliers_iqr(df, column="sales")
+    df = drop_null_rows(df, columns=critical_columns)
+    df = standardize_string_columns(df, columns=string_columns)
+    df = standardize_numeric_columns(df, columns=numeric_columns)
+
+    if date_column and date_column in df.columns:
+        df = standardize_date_column(df, column=date_column)
+
+    for col in outlier_columns:
+        if col in df.columns:
+            df = remove_outliers_iqr(df, column=col)
 
     print(f"[clean] Concluído. {len(df)} linhas limpas.")
     print("=" * 40)
