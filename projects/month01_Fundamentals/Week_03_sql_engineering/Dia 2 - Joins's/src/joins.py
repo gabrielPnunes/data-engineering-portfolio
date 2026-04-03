@@ -55,6 +55,7 @@ def inner_join(
 ) -> pd.DataFrame:
     return join_tables(con, left, right, on, join_type="INNER", columns=columns)
 
+
 #==LEFT JOIN==#
 def left_join(
     con: duckdb.DuckDBPyConnection,
@@ -64,6 +65,7 @@ def left_join(
     columns: list = None,
 ) -> pd.DataFrame:
     return join_tables(con, left, right, on, join_type="LEFT", columns=columns)
+
 
 #==RIGHT JOIN==#
 def right_join(
