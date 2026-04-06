@@ -1,0 +1,5 @@
+customer_type,gender,total_orders,total_revenue,avg_ticket,avg_reward_points,revenue_rank
+Member,Male,10762,1335171.48,124.06,11.92,1
+Normal,Male,10793,1311550.72,121.52,0.0,2
+Member,Female,10175,1251904.53,123.04,11.77,3
+Normal,Female,8950,945953.64,105.69,0.0,4
