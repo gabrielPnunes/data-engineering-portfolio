@@ -10,7 +10,7 @@ from bcb_client import (
 #==SERIES DISPONIVEIS==#
 print("Séries mapeadas:")
 for name, codigo in BCB_SERIES.items():
-    print(f"  {name} → {codigo}")
+    print(f"  {name} -> {codigo}")
 
 #==CONFIG DE DATA==#
 data_inicio = "01/01/2025"
