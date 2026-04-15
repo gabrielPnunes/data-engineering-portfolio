@@ -1,4 +1,4 @@
-# Data Engineering Portfolia
+# Data Engineering Portfolio
 ---
 - O foco desse repositório é mostrar minha trajetória inicial nos estudos para engenharia de dados
 - Esse portfolio é intensivo inicialmente de 6 meses para entender os pilares de uma stack especifica que será
