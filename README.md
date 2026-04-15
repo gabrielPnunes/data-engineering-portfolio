@@ -19,8 +19,8 @@
 ## Estrutura
 | Mês | Tema | Status |
 |-----|------|--------|
-| 01 | Fundamentos (Python, SQL, APIs) | Em andamento |
-| 02 | Pipelines e Docker | A fazer |
+| 01 | Fundamentos (Python, SQL, APIs) | Concluído |
+| 02 | Pipelines e Docker | Em andamento |
 | 03 | Big Data com Spark | A fazer |
 | 04 | Lakehouse e Delta Lake | A fazer |
 | 05 | Orquestração com Airflow | A fazer |
