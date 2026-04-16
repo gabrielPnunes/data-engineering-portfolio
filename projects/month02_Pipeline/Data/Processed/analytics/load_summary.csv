@@ -1,0 +1,8 @@
+camada,arquivo,linhas,colunas,tamanho
+raw,raw_deliveries.parquet,102000,11,2232.69 KB
+raw,raw_drivers.parquet,255,3,5.16 KB
+raw,raw_hubs.parquet,10,3,2.26 KB
+processed,deliveries_transformed.parquet,0,0,0 KB
+analytics,deliveries_by_hub.parquet,0,0,0 KB
+analytics,deliveries_by_driver.parquet,0,0,0 KB
+analytics,deliveries_by_status.parquet,0,0,0 KB
