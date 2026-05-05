@@ -1,0 +1,32 @@
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ambientes
+.env
+.venv
+venv/
+
+# dados
+*.parquet
+*.csv
+*.json
+data/
+
+# logs
+*.log
+logs/
+
+# docker
+.dockerignore
+
+# jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# ide
+.vscode/
+.idea/
