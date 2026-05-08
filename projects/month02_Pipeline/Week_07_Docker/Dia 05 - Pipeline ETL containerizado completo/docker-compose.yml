@@ -1,0 +1,38 @@
+services:
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER:     pipeline
+      POSTGRES_PASSWORD: pipeline123
+      POSTGRES_DB:       pipeline
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pipeline"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pipeline:
+    build: .
+    env_file: .env
+    volumes:
+      - C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month02_Pipeline/Data/raw:/data/raw
+      - C:/Users/Ceifas/OneDrive/Desktop/data-engineering-portfolio/projects/month02_Pipeline/Data/Processed:/data/processed
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
