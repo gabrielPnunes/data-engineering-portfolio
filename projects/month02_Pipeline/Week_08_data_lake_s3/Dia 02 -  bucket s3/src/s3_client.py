@@ -2,6 +2,8 @@ import boto3
 import os
 from botocore.exceptions import ClientError, NoCredentialsError
 
+region = os.getenv("AWS_REGION", "us-east-1")
+
 client = boto3.client(
     "s3",
     region_name            = region,
@@ -83,3 +85,10 @@ def get_bucket_info(client, bucket: str) -> dict:
     info = {"bucket": bucket, "region": region, "lifecycle_rules": rules}
     print(f"[s3] info - {info}")
     return info
+
+def delete_bucket(client, bucket: str, confirm: bool = False) -> None:
+    if not confirm:
+        print(f"[s3] passe confirm=True para deletar '{bucket}'")
+        return
+    client.delete_bucket(Bucket=bucket)
+    print(f"[s3] bucket deletado: {bucket}")
